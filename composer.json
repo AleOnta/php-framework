@@ -1,0 +1,14 @@
+{
+    "name": "ale-o/php-framework",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/app"
+        }
+    },
+    "authors": [
+        {
+            "name": "AleOnta",
+            "email": "casualotn@gmail.com"
+        }
+    ]
+}
