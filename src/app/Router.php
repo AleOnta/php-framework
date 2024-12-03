@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Utility\AppConstants;
+
 class Router
 {
 
@@ -86,6 +88,6 @@ class Router
     private function handle404()
     {
         http_response_code(404);
-        include __DIR__ . '/views/404.php';
+        include AppConstants::VIEWS_DIR . '404.php';
     }
 }
