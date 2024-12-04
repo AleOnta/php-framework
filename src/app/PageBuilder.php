@@ -52,8 +52,9 @@ class PageBuilder
         if (count($assets) > 0) {
             # loops through all files
             foreach ($assets[$type] as $file) {
+                $filePath = AppConstants::ASSETS_DIR . "{$type}/{$file}.{$type}";
                 # check the asset existence
-                if (file_exists(AppConstants::ASSETS_DIR . $file)) {
+                if (file_exists($filePath)) {
                     # append the asset file as html tag
                     $tags .= match ($type) {
                         'js' => "<script src=\"/assets/{$type}/{$file}.{$type}.js\"></script>",
