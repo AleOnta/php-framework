@@ -9,10 +9,12 @@ class Router
 
     protected $routes = [];
     protected $defaultRoute;
+    protected $groupPrefix = '';
 
     private function addRoute($route, $controller, $action, $method)
     {
-        $this->routes[$method][$route] = [
+        $fullRoute = $this->groupPrefix . $route;
+        $this->routes[$method][$fullRoute] = [
             'controller' => $controller,
             'action' => $action,
             # parameters will be implemented in the future
@@ -56,6 +58,19 @@ class Router
         $this->defaultRoute = ['controller' => $controller, 'action' => $action];
     }
 
+    # allows the creation of route groups (es /users or /admin...)
+    public function group($prefix, $callback)
+    {
+        # save the previous prefix
+        $previousPrefix = $this->groupPrefix;
+        # update the current group prefix
+        $this->groupPrefix .= $prefix;
+        # execute the callback
+        $callback($this);
+        # restore the previous prefix after defining the group
+        $this->groupPrefix = $previousPrefix;
+    }
+
     # handles incoming requests and routes them to the correct controller
     public function dispatch()
     {
@@ -89,5 +104,7 @@ class Router
     {
         http_response_code(404);
         include AppConstants::VIEWS_DIR . '404.php';
+        echo "<h3>Available Routes:</h3>";
+        echo "<p>" . print_r($this->routes) . "</p>";
     }
 }
