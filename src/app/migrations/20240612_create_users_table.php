@@ -5,13 +5,13 @@ class CreateUsersTable
     public function up(PDO $db)
     {
         $query = "CREATE TABLE IF NOT EXISTS users (
-            id AUTO_INCREMENT PRIMARY KEY,
+            id INT AUTO_INCREMENT PRIMARY KEY,
             firstname VARCHAR(50) NOT NULL,
             lastname VARCHAR(50) NOT NULL,
-            username VARCHAR(50) NOT NULL,
-            email VARCHAR(75) NOT NULL,
+            username VARCHAR(50) NOT NULL UNIQUE,
+            email VARCHAR(75) NOT NULL UNIQUE,
             dob DATE NOT NULL
-        );";
+        ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;";
         # execute the query
         $db->exec($query);
     }
