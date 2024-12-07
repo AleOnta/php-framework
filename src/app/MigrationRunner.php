@@ -34,7 +34,7 @@ class MigrationRunner
                 require_once AppConstants::MIGRATIONS_DIR . $migrationFile;
                 # compose the migration classname
                 $class = str_replace('.php', '', $migrationFile);
-                $class = substr($class, 9);
+                $class = substr($class, 15);
                 $class = explode('_', $class);
                 $className = '';
                 foreach ($class as $word) $className .= ucfirst($word);
