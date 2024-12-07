@@ -6,11 +6,11 @@ use App\Core\Model;
 
 class User extends Model
 {
-
     protected string $firstName;
     protected string $lastName;
     protected string $userName;
     protected string $email;
+    protected ?int $passwordId;
     protected string $birthdate;
     protected int $status;
     protected string $createdAt;
@@ -27,6 +27,7 @@ class User extends Model
             'lastName' => 'lastname',
             'userName' => 'username',
             'email' => 'email',
+            'passwordId' => 'password_id',
             'birthdate' => 'dob',
             'status' => 'status',
             'created_at' => 'created_at',
