@@ -58,4 +58,69 @@ class Model
         # return the result
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    # create or update the entity calling the method
+    public function save()
+    {
+        # check table value
+        if (!isset($table)) {
+            throw new RuntimeException("Attribute TABLE must be defined.");
+        }
+
+        # extract instance attributes
+        $attributes = get_object_vars($this);
+        $columns = [];
+        $values = [];
+
+        foreach ($attributes as $key => $val) {
+            # skip model table mappings
+            if ($key === 'modelMap') continue;
+
+            # check if the property is set in the model map
+            if (isset($this->modelMap[$key])) {
+                # encode value if is an array
+                if (is_array($val)) {
+                    $val = json_encode($val);
+                }
+                # store the column name
+                $columns[] = $this->modelMap[$key];
+                # store the value for the column
+                $values[] = isset($val) ? $val : null;
+            }
+        }
+
+        # if the object that is to be persisted is empty - throw exception
+        if (empty($columns)) {
+            throw new RuntimeException("Element cannot be persisted in " . static::$table . " if it holds no values!");
+        }
+
+        # check if the entity is new or need to be updated
+        if ($this->id === null) {
+            # create the column list string
+            $columnsStr = implode(',', $columns);
+            # create the PDO placeholders for values
+            $valuesPlaceholder = implode(',', array_fill(0, count($columns), '?'));
+            # compose the query
+            $query = "INSERT INTO {$this->table} ({$columnsStr}) VALUES ({$valuesPlaceholder});";
+        } else {
+            # define the SET statement
+            $updateParts = [];
+            foreach ($columns as $col) $updateParts[] = "{$col} = ?";
+            $update = implode(',', $updateParts);
+            # compose the query
+            $query = "UPDATE {$this->table} SET {$update} WHERE id = ?;";
+            # add id to the values array
+            $values[] = $this->id;
+        }
+
+        # prepare the query statement
+        $stmt = $this->db->prepare($query);
+        # execute the query
+        $stmt->execute($values);
+        # if INSERT INTO return id
+        if ($this->id === null) {
+            $this->id = (int)$this->db->lastInsertId();
+            return $this->id;
+        }
+    }
 }

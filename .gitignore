@@ -20,3 +20,4 @@
 # Custom made
 .env
 src/app/tester.php
+node_modules
