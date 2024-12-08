@@ -21,3 +21,4 @@
 .env
 src/app/tester.php
 node_modules
+public/dist
