@@ -13,7 +13,7 @@ class HomeController extends Controller
         # define the content of the page
         $content = [
             'page_title' => 'Home',
-            'main' => 'index'
+            'view' => 'index'
         ];
         # define the assets required
         $assets = [
@@ -29,7 +29,7 @@ class HomeController extends Controller
         # define the content of the page
         $content = [
             'page_title' => 'TestOne',
-            'main' => 'test_one'
+            'view' => 'test_one'
         ];
         # define the assets required
         $assets = [
@@ -45,7 +45,7 @@ class HomeController extends Controller
         # define the content of the page
         $content = [
             'page_title' => 'TestTwo',
-            'main' => 'test_two'
+            'view' => 'test_two'
         ];
         # define the assets required
         $assets = [
