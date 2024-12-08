@@ -25,8 +25,8 @@ class PageBuilder
             'basic' => file_get_contents(AppConstants::TEMPLATES_DIR . 'basic.html')
         };
 
-        # get the main content of the page
-        $main = file_get_contents(AppConstants::VIEWS_DIR . $content['main'] . '.php');
+        # get the view
+        $view = file_get_contents(AppConstants::VIEWS_DIR . $content['view'] . '.php');
         # load the requested css assets
         $styles = $this->loadAssets('css', $assets);
         # load the requested js assets
@@ -36,7 +36,7 @@ class PageBuilder
         # append the styles to the html
         $this->page = str_replace('{{styles}}', $styles, $this->page);
         # insert the main content of the page
-        $this->page = str_replace('{{main}}', $main, $this->page);
+        $this->page = str_replace('{{main}}', $view, $this->page);
         # eventually load components into the page
         $this->loadComponents();
         # append the js assets to the html
@@ -60,7 +60,7 @@ class PageBuilder
                 if (file_exists($filePath)) {
                     # append the asset file as html tag
                     $tags .= match ($type) {
-                        'js' => "<script src=\"/assets/{$type}/{$file}.{$type}.js\"></script>",
+                        'js' => "<script src=\"/assets/{$type}/{$file}.js\"></script>",
                         'css' => "<link rel=\"stylesheet\" href=\"/assets/{$type}/{$file}.css\">",
                         default => ''
                     };
