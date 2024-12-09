@@ -22,3 +22,4 @@
 src/app/tester.php
 node_modules
 public/dist
+public/dist/global.css
