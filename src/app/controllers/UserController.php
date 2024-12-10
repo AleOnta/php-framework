@@ -14,10 +14,7 @@ class UserController extends Controller
         # define the content of the page
         $content = ['page_title' => 'Register', 'view' => 'register'];
         # define the assets required
-        $assets = [
-            'css' => [],
-            'js' => ['register']
-        ];
+        $assets = ['css' => [], 'js' => ['register']];
         # render the page
         $this->render('basic', $content, $assets);
     }
@@ -39,8 +36,8 @@ class UserController extends Controller
             ];
             # validate the user
             $errors = User::validateUser($user);
-            if ($errors['status'] > 0) {
-                print_r($errors);
+            if ($errors['count'] > 0) {
+                echo json_encode(['status' => false, 'data' => $errors]);
             } else {
                 echo "OK";
             }
