@@ -14,10 +14,7 @@ class UserController extends Controller
         # define the content of the page
         $content = ['page_title' => 'Register', 'view' => 'register'];
         # define the assets required
-        $assets = [
-            'css' => [],
-            'js' => ['register']
-        ];
+        $assets = ['css' => [], 'js' => ['register']];
         # render the page
         $this->render('basic', $content, $assets);
     }
