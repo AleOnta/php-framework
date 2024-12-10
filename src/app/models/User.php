@@ -176,6 +176,6 @@ class User extends Model
                 continue;
             }
         }
-        return ['status' => count($errors), 'data' => $errors];
+        return ['count' => count($errors), 'errors' => $errors];
     }
 }
