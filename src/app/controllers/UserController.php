@@ -34,13 +34,41 @@ class UserController extends Controller
                 'password' => $data->password,
                 'dob' => $data->birthdate
             ];
+
             # validate the user
             $errors = User::validateUser($user);
             if ($errors['count'] > 0) {
-                echo json_encode(['status' => false, 'data' => $errors]);
-            } else {
-                echo "OK";
+                # bad user input
+                $this->return(400, false, $errors);
             }
+
+            # check if the user already exists
+            $entity = new User();
+            $email = $entity->getUserByEmail($data->email);
+            if ($email !== false) {
+                $this->return(400, false, ['errorMsg' => "Email {$data->email} has already been registered"]);
+            }
+
+            # check if username is already been used
+            $username = $entity->getUserByUsername($data->username);
+            if ($username !== false) {
+                $this->return(400, false, ['errorMsg' => "Username '{$data->username}' isn't available"]);
+            }
+
+            # create the new user
+            $pswId = $entity->storePassword($data->password);
+            if ($pswId) {
+                $userId = $entity->create($data, $pswId);
+                $this->return(201, true, ['msg' => "User created correctly"]);
+            }
+            $this->return(500, false, ['errorMsg' => 'Error while creating the user']);
         }
+    }
+
+    private function return(int $code, bool $status, array $data = [])
+    {
+        http_response_code($code);
+        echo json_encode(['status' => $status, 'data' => $data]);
+        exit;
     }
 }

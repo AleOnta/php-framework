@@ -6,15 +6,16 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('lastname').value = 'Ontani';
     document.getElementById('username').value = 'aontani!';
     document.getElementById('email').value = 'aontani@gmail.com';
-    document.getElementById('password-one').value = 'pswwwwwww';
-    document.getElementById('password-two').value = 'pswwwwwww';
+    document.getElementById('password').value = 'pswwwwwww';
+    document.getElementById('password_check').value = 'pswwwwwww';
     document.getElementById('birthdate').value = '1999-01-11';
 })
 
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    const formData = new FormData(form);
+    
     let json = {};
+    const formData = new FormData(form);
     formData.forEach((value, key) => {
         json[key] = value;
     });

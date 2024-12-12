@@ -115,6 +115,12 @@ class User extends Model
         return $this->find(['email' => $email]);
     }
 
+    # retrieve and return user by its username
+    public function getUserByUsername(string $username)
+    {
+        return $this->find(['username' => $username]);
+    }
+
     # hash and persist a password in the db
     public function storePassword($password): ?int
     {
@@ -131,7 +137,19 @@ class User extends Model
     }
 
     # persist a new user in the db
-    public function create($passwordId) {}
+    public function create($data, $passwordId)
+    {
+        # set values into instance
+        $this->firstName = $data->firstname;
+        $this->lastName = $data->lastname;
+        $this->userName = $data->username;
+        $this->email = $data->email;
+        $this->passwordId = $passwordId;
+        $this->birthdate = $data->birthdate;
+
+        # persist the user
+        $this->save();
+    }
 
     # function that validate user inputs for user creation
     public static function validateUser($userInputs)

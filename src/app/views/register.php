@@ -48,9 +48,9 @@
                 required>
         </span>
         <span class="relative">
-            {{component:inputs.errorTooltip {"error":"password-one", "dir":"right"}}}
+            {{component:inputs.errorTooltip {"error":"password", "dir":"right"}}}
             <input
-                id="password-one"
+                id="password"
                 class="p-3 my-2 bg-gray-700 bg-opacity-95 text-white rounded-lg shadow-md w-full"
                 type="password"
                 name="password"
@@ -58,9 +58,9 @@
                 required>
         </span>
         <span class="error-container">
-            {{component:inputs.errorTooltip {"error":"password-two", "dir":"right"}}}
+            {{component:inputs.errorTooltip {"error":"password_check", "dir":"right"}}}
             <input
-                id="password-two"
+                id="password_check"
                 class="p-3 my-2 bg-gray-700 bg-opacity-95 text-white rounded-lg shadow-md w-full"
                 type="password"
                 name="password"
