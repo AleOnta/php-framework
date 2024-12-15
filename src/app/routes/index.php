@@ -11,8 +11,12 @@ $router = new Router();
 $router->get('/', HomeController::class, 'index');
 
 $router->group('/users', function ($router) {
+    # registration routes
     $router->get('/register', UserController::class, 'showRegistrationForm');
-    $router->post('/register', UserController::class, 'createUser');
+    $router->post('/register', UserController::class, 'register');
+    # login routes
+    $router->get('/login', UserController::class, 'showLoginForm');
+    $router->post('/login', UserController::class, 'login');
 });
 
 # Routes the request

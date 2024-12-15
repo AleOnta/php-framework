@@ -1,17 +1,18 @@
+// vars for users registration or login
+let context = window.location.href.replace('http://localhost:8000','');
+let formId = context === '/users/register' ? 'registration-form' : 'login-form';
+let form = document.getElementById(formId);
 
-const form = document.getElementById("registration-form");
+if (context === '/users/register') {
+    form.addEventListener('submit', (e) => register(e))
+} 
 
-window.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('firstname').value = 'Alessandro';
-    document.getElementById('lastname').value = 'Ontani';
-    document.getElementById('username').value = 'aontani!';
-    document.getElementById('email').value = 'aontani@gmail.com';
-    document.getElementById('password').value = 'pswwwwwww';
-    document.getElementById('password_check').value = 'pswwwwwww';
-    document.getElementById('birthdate').value = '1999-01-11';
-})
+if (context === '/users/login') {
+    form.addEventListener('submit', (e) => login(e))
+    form = form.elements;
+}
 
-form.addEventListener('submit', async (event) => {
+async function register(event) {
     event.preventDefault();
     
     let json = {};
@@ -31,10 +32,38 @@ form.addEventListener('submit', async (event) => {
 
     const data = await res.json();
     if (data?.status === false) {
-        displayErrors(data.data.errors);
-    } 
+        let errors = data.data?.errors;
+        displayErrors(errors);
+    }
+}
 
-})
+async function login(event) {
+    event.preventDefault();
+    
+    let json = {
+        'email':form.item(0).value,
+        'password':form.item(1).value
+    };
+
+    const res = await fetch("/users/login", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Custom-Header': 'login-user'
+        },
+        body: JSON.stringify(json)
+    });
+
+    const data = await res.json();
+    if (data?.status === false) {
+        // set error message into paragraph
+        document.getElementById('login-error').textContent = data.data.message
+        // render the error message
+        let alert = document.getElementById('login-error-container');
+        alert.classList.remove('hidden');
+        alert.classList.add('flex');
+    }
+}
 
 function displayErrors(errors) {
     errors = Object.entries(errors);

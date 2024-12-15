@@ -137,6 +137,6 @@ class PageBuilder
     private function getBuildTime()
     {
         # append to the html a s counter for the page building process
-        $this->page .= "<h6 class='absolute bottom-0 left-0 text-xs text-slate-500'>Build time: " . (microtime(true) - $this->start) . "s</h6>";
+        $this->page .= "<h6 id='build-time' class='absolute bottom-0 left-0 text-xs text-slate-500'>Build time: " . (microtime(true) - $this->start) . "s</h6>";
     }
 }

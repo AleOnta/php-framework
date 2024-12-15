@@ -1,16 +1,18 @@
-{{component:navbar}}
 <div class="container w-full h-screen flex items-center justify-center">
-    <form id="registration-form" method="POST" action="/users/register" class="px-8 pt-8 pb-12 bg-slate-500 bg-opacity-95 flex flex-col w-4/12 rounded-xl">
+    <form id="registration-form" method="POST" action="/users/register" class="p-6 bg-slate-600 bg-opacity-95 flex flex-col w-full max-w-md rounded-xl">
         <div class="flex justify-start mb-6">
             <h2 class="text-3xl font-bold text-white">Register</h2>
-            <a class="text-xs self-end ms-2 text-slate-300" href="/users/login">or login</a>
+            <p class="text-xs self-end text-white mt-4 ms-2">
+                Already have an account?
+                <a class="text-xs text-gray-900 -200 hover:underline mt-4" href="/users/login">Login</a>
+            </p>
         </div>
         <div class="w-full my-2 flex items-center justify-between">
             <span class="relative">
                 {{component:inputs.errorTooltip {"error":"firstname", "dir":"top"}}}
                 <input
                     id="firstname"
-                    class="p-3 bg-gray-700 bg-opacity-95 text-white rounded-lg shadow-md"
+                    class="max-w-[185px] bg-gray-700 text-gray-200 border-0 rounded-md p-2 shadow-md focus:outline-none focus:ring-1 transition ease-in-out duration-150"
                     type="text"
                     name="firstname"
                     placeholder="Firstname"
@@ -20,7 +22,7 @@
                 {{component:inputs.errorTooltip {"error":"lastname", "dir":"top"}}}
                 <input
                     id="lastname"
-                    class="p-3 bg-gray-700 bg-opacity-95 text-white rounded-lg shadow-md"
+                    class="max-w-[185px] bg-gray-700 text-gray-200 border-0 rounded-md p-2 shadow-md focus:outline-none focus:ring-1 transition ease-in-out duration-150"
                     type="text"
                     name="lastname"
                     placeholder="Lastname"
@@ -31,7 +33,7 @@
             {{component:inputs.errorTooltip {"error":"username", "dir":"right"}}}
             <input
                 id="username"
-                class="p-3 my-2 bg-gray-700 bg-opacity-95 text-white rounded-lg shadow-md w-full"
+                class="my-2 bg-gray-700 text-gray-200 border-0 rounded-md p-2 shadow-md focus:outline-none focus:ring-1 transition ease-in-out duration-150 w-full"
                 type="text"
                 name="username"
                 placeholder="Username"
@@ -41,7 +43,7 @@
             {{component:inputs.errorTooltip {"error":"email", "dir":"right"}}}
             <input
                 id="email"
-                class="p-3 my-2 bg-gray-700 bg-opacity-95 text-white rounded-lg shadow-md w-full"
+                class="my-2 bg-gray-700 text-gray-200 border-0 rounded-md p-2 shadow-md focus:outline-none focus:ring-1 transition ease-in-out duration-150 w-full"
                 type="email"
                 name="email"
                 placeholder="Email"
@@ -51,7 +53,7 @@
             {{component:inputs.errorTooltip {"error":"password", "dir":"right"}}}
             <input
                 id="password"
-                class="p-3 my-2 bg-gray-700 bg-opacity-95 text-white rounded-lg shadow-md w-full"
+                class="my-2 bg-gray-700 text-gray-200 border-0 rounded-md p-2 shadow-md focus:outline-none focus:ring-1 transition ease-in-out duration-150 w-full"
                 type="password"
                 name="password"
                 placeholder="Password"
@@ -61,7 +63,7 @@
             {{component:inputs.errorTooltip {"error":"password_check", "dir":"right"}}}
             <input
                 id="password_check"
-                class="p-3 my-2 bg-gray-700 bg-opacity-95 text-white rounded-lg shadow-md w-full"
+                class="my-2 bg-gray-700 text-gray-200 border-0 rounded-md p-2 shadow-md focus:outline-none focus:ring-1 transition ease-in-out duration-150 w-full"
                 type="password"
                 name="password"
                 placeholder="Confirm Password"
@@ -71,7 +73,7 @@
             {{component:inputs.errorTooltip {"error":"birthdate", "dir":"right"}}}
             <input
                 id="birthdate"
-                class="p-3 my-2 bg-gray-700 bg-opacity-95 text-white rounded-lg shadow-md w-full"
+                class="my-2 bg-gray-700 text-gray-200 border-0 rounded-md p-2 shadow-md focus:outline-none focus:ring-1 transition ease-in-out duration-150 w-full"
                 type="date"
                 name="birthdate"
                 placeholder="Birthdate"
@@ -80,7 +82,7 @@
 
         <button
             type="submit"
-            class="w-full px-6 py-2 mt-4 font-semibold text-center text-slate-200 align-middle transition-all rounded-lg cursor-pointer bg-gray-700 bg-opacity-95 leading-pro text-base ease-soft-in tracking-tight-soft shadow-soft-md bg-150 bg-x-25 hover:scale-105 hover:text-white hover:bg-slate-700 hover:shadow-lg active:opacity-85">
+            class="bg-gray-800 bg-opacity-85 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-opacity-100 transition ease-in-out duration-150">
             Register
         </button>
     </form>

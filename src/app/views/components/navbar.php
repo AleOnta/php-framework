@@ -1,31 +1,40 @@
-<!-- START NAVBAR COMPONENT -->
+<?php
+
+use App\Models\Auth; ?>
+
 <div class="w-full fixed top-0 left-0 right-0 text-black">
-    <nav class="flex px-4 border-b md:shadow-lg items-center relative bg-white">
-        <div class="text-lg font-bold md:py-0 py-4">
+    <nav class="flex px-4 border-b shadow-lg items-center bg-white p-4 md:p-4">
+        <div class="text-base md:text-lg font-bold py-0">
             PHP Framework
         </div>
-        <ul class="md:px-2 ml-auto md:flex md:space-x-2 absolute md:relative top-full left-0 right-0">
+        <ul class="px-2 ml-auto flex items-center space-x-2 top-full left-0 right-0 text-sm">
             <li>
-                <a href="#" class="flex md:inline-flex p-4 items-center hover:bg-gray-50">
+                <a href="#" class="inline-flex items-center sm:px-3 hover:bg-gray-50">
                     <span>Home</span>
                 </a>
             </li>
             <li>
-                <a href="#" class="flex md:inline-flex p-4 items-center hover:bg-gray-50">
+                <a href="#" class="inline-flex items-center sm:px-3 hover:bg-gray-50">
                     <span>Products</span>
                 </a>
             </li>
             <li>
-                <a href="#" class="flex md:inline-flex p-4 items-center hover:bg-gray-50">
+                <a href="#" class="inline-flex items-center sm:px-3 hover:bg-gray-50">
                     <span>About us</span>
                 </a>
             </li>
+            <li>
+                <div id="user-dropdown-btn" class="bg-slate-800 text-white font-semibold rounded-full w-8 h-8 flex justify-center items-center cursor-pointer">
+                    <?php if (Auth::check()): ?>
+                        <p class="m-0">
+                            <?= substr(Auth::user()['firstname'], 0, 1) . substr(Auth::user()['lastname'], 0, 1) ?>
+                        </p>
+                        {{component:user.navbarDropdown}}
+                    <?php else: ?>
+                        <p class="m-0">?</p>
+                    <?php endif; ?>
+                </div>
+            </li>
         </ul>
-        <div class="ml-auto md:hidden text-gray-500 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z" />
-            </svg>
-        </div>
     </nav>
 </div>
-<!-- END OF NAVBAR COMPONENT -->

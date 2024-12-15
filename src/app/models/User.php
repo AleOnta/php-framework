@@ -6,6 +6,7 @@ use PDO;
 use DateTime;
 use Exception;
 use App\Core\Model;
+use stdClass;
 
 class User extends Model
 {
@@ -79,9 +80,6 @@ class User extends Model
     # SETTERS
     public function setFirstName($value)
     {
-        if ($value == '') {
-            throw new Exception("Firstname can't be empty.");
-        }
         $this->firstName = $value;
     }
     public function setLastName($value)
@@ -121,8 +119,21 @@ class User extends Model
         return $this->find(['username' => $username]);
     }
 
+    # retrieve user hashed password by id
+    public function getUserPasswordById(int $passwordId)
+    {
+        # prepare the query
+        $stmt = $this->db->prepare("SELECT password FROM passwords WHERE id = :id");
+        # bind params
+        $stmt->bindParam(':id', $passwordId, PDO::PARAM_INT);
+        # execute the query
+        $stmt->execute();
+        # return the password
+        return $stmt->fetch(PDO::FETCH_COLUMN);
+    }
+
     # hash and persist a password in the db
-    public function storePassword($password): ?int
+    public function storePassword(string $password): ?int
     {
         # hashing
         $hash = password_hash($password, PASSWORD_DEFAULT);
@@ -137,7 +148,7 @@ class User extends Model
     }
 
     # persist a new user in the db
-    public function create($data, $passwordId)
+    public function create(stdClass $data, int $passwordId)
     {
         # set values into instance
         $this->firstName = $data->firstname;
@@ -152,7 +163,7 @@ class User extends Model
     }
 
     # function that validate user inputs for user creation
-    public static function validateUser($userInputs)
+    public static function validateUser(array $userInputs)
     {
         $errors = [];
         # loop on user inputs
@@ -195,5 +206,32 @@ class User extends Model
             }
         }
         return ['count' => count($errors), 'errors' => $errors];
+    }
+
+    # function that validate user credentials for login
+    public static function validateCredentials(array $credentials)
+    {
+
+        # extract credentials
+        $email = trim($credentials['email']);
+        $password = trim($credentials['password']);
+
+        # check email value
+        if (is_null($email) || $email == '') {
+            return ['status' => false, 'message' => "Email can't be empty..."];
+        }
+
+        # check email value
+        if (is_null($password) || $password == '') {
+            return ['status' => false, 'message' => "The password can't be empty..."];
+        }
+
+        # check the email composition
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return ['status' => false, 'message' => "Please provide a valid email address."];
+        }
+
+        # data is okay
+        return ['status' => true];
     }
 }

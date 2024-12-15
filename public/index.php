@@ -2,6 +2,9 @@
 
 use App\Utility\AppConstants;
 
+# start a new session
+session_start();
+
 # include composer autoload
 require __DIR__ . '/../vendor/autoload.php';
 

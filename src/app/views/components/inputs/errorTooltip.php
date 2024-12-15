@@ -1,8 +1,8 @@
 <?php
 
 $styles = $dir == 'top'
-    ? '-top-4 group-hover:-translate-y-5'
-    : '-right-64 bottom-0 top-0 my-auto group-hover:translate-x-8';
+    ? '-top-[22px] group-hover:-translate-y-5'
+    : '-right-[270px] bottom-0 top-0 my-auto group-hover:translate-x-8';
 
 ?>
 
@@ -22,12 +22,25 @@ $styles = $dir == 'top'
                     58.8-107.7V160c0-70.7-57.3-128-128-128H144C73.3 32 16 89.3 16 160c0 17.7 14.3 32 
                     32 32s32-14.3 32-32zm80 320a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"></path>
             </svg>
-            <span
-                class="absolute text-nowrap opacity-0 flex items-center justify-center p-2 
-              bg-red-100 bg-opacity-50 rounded-lg <?= $styles ?> group-hover:opacity-100 
-                duration-500 text-sm text-red-700"
-                data-error-message="<?= $error ?>">
-            </span>
+
+            <div
+                role="alert"
+                class="h-fit absolute text-nowrap opacity-0 flex items-center justify-center bg-opacity-50 <?= $styles ?> group-hover:opacity-100 text-sm  bg-red-100 dark:bg-red-900 border-l-4 border-red-500 dark:border-red-700 text-red-900 dark:text-red-100 p-2 rounded-lg transition duration-300 ease-in-out hover:bg-red-200 dark:hover:bg-red-800 transform hover:scale-105">
+                <svg
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    class="h-5 w-5 flex-shrink-0 mr-2 text-red-600"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        stroke-width="2"
+                        stroke-linejoin="round"
+                        stroke-linecap="round"></path>
+                </svg>
+                <p data-error-message="<?= $error ?>" class="text-xs font-semibold"></p>
+            </div>
+
         </div>
     </div>
 </section>
