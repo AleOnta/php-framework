@@ -39,17 +39,23 @@ async function register(event) {
 
 async function login(event) {
     event.preventDefault();
-    
-    let json = {
-        'email':form.item(0).value,
-        'password':form.item(1).value
-    };
 
+    // define constant for csrf token validation on server side
+    const csrfToken = document.querySelector('#csrf_token_login').value;
+    const csrfTokenId = document.querySelector('#csrf_id_login').value
+
+    let json = {
+        'email':form.item(2).value,
+        'password':form.item(3).value
+    };
+    
     const res = await fetch("/users/login", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-Custom-Header': 'login-user'
+            'X-Custom-Header': 'login-user',
+            'X-CSRF-Token': csrfToken,
+            'X-CSRF-Token-Id': csrfTokenId
         },
         body: JSON.stringify(json)
     });
@@ -62,6 +68,10 @@ async function login(event) {
         let alert = document.getElementById('login-error-container');
         alert.classList.remove('hidden');
         alert.classList.add('flex');
+    }
+
+    if (data?.status) {
+        window.location.href = '/';
     }
 }
 

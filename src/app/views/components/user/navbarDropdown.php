@@ -2,6 +2,9 @@
 
 use App\Models\Auth;
 
+$key = 'logout';
+$logoutToken = Auth::generateCSRF($key);
+
 ?>
 <div id="user-dropdown" class="hidden items-center justify-center bg-gray-100 rounded-md absolute right-1 top-16">
     <div
@@ -168,8 +171,9 @@ use App\Models\Auth;
                 </a>
             </nav>
         </div>
-        <form action="/users/logout" method="POST" class="pt-2">
-
+        <form id="logout" action="/users/logout" method="POST" class="pt-2">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($logoutToken, ENT_QUOTES, 'UTF-8'); ?>">
+            <input type="hidden" name="csrf_token_id" value="<?php echo htmlspecialchars($key); ?>">
             <button
                 type="submit"
                 class="flex items-center space-x-3 py-3 px-4 w-full leading-6 text-base text-gray-600 focus:outline-none hover:bg-gray-100 rounded-md">

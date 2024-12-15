@@ -71,13 +71,16 @@ class UserController extends Controller
         # define the content of the page
         $content = ['page_title' => 'Login', 'view' => 'login'];
         # define the assets required
-        $assets = ['css' => [], 'js' => ['users']];
+        $assets = ['css' => [], 'js' => ['index', 'users']];
         # render the page
         $this->render('basic', $content, $assets);
     }
 
     public function login()
     {
+        # check CSRF token
+        $res = Request::validateCSRF($this);
+        # retrieve custom header
         $header = Request::getCustomHeader();
         if ($header === 'login-user') {
             # retrieve submitted data
@@ -107,6 +110,7 @@ class UserController extends Controller
             }
 
             # save user data in session
+            Auth::startSession();
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['logged_in'] = true;
 
@@ -117,8 +121,8 @@ class UserController extends Controller
 
     public function logout()
     {
-        var_dump($_POST);
-        die();
+        # validate CSRF token
+        Request::validateCSRF($this);
         # execute the logout
         Auth::logout();
         # redirect the user to login page
@@ -126,7 +130,7 @@ class UserController extends Controller
         exit();
     }
 
-    private function return(int $code, bool $status, array $data = [])
+    public function return(int $code, bool $status, array $data = [])
     {
         http_response_code($code);
         echo json_encode(['status' => $status, 'data' => $data]);

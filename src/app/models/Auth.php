@@ -9,10 +9,14 @@ class Auth
     # logged in user data storage
     public static ?array $cachedUser = null;
 
-    private static function startSession()
+    public static function startSession()
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
+            # assing empty array to session csrf tokens
+            if (empty($_SESSION['csrf_tokens'])) {
+                $_SESSION['csrf_tokens'] = [];
+            }
         }
     }
 
@@ -61,5 +65,16 @@ class Auth
         unset($_SESSION['logged_in']);
         # destroy the existing session
         session_destroy();
+    }
+
+    public static function generateCSRF($label)
+    {
+        # start the session
+        self::startSession();
+        # generate the new token
+        $token = bin2hex(random_bytes(32));
+        $_SESSION['csrf_tokens'][$label] = $token;
+        # return the token set
+        return $_SESSION['csrf_tokens'][$label];
     }
 }

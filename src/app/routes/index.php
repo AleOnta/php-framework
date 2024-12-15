@@ -17,6 +17,8 @@ $router->group('/users', function ($router) {
     # login routes
     $router->get('/login', UserController::class, 'showLoginForm');
     $router->post('/login', UserController::class, 'login');
+    # logout route
+    $router->post('/logout', UserController::class, 'logout');
 });
 
 # Routes the request

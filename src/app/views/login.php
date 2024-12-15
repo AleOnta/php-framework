@@ -1,3 +1,11 @@
+<?php
+
+use App\Models\Auth;
+
+$key = 'login';
+$csrfToken = Auth::generateCSRF('login');
+?>
+
 <div class="flex flex-col items-center justify-center h-screen dark">
     <div class="w-full max-w-md bg-slate-600 bg-opacity-95 rounded-lg shadow-md p-6">
         <div class="flex justify-between items-center mb-4">
@@ -5,6 +13,8 @@
             {{component:errorMessage}}
         </div>
         <form class="flex flex-col" id="login-form">
+            <input id="csrf_token_login" type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+            <input id="csrf_id_login" type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($key); ?>">
             <input
                 type="email"
                 placeholder="Email address"
@@ -27,3 +37,4 @@
         </form>
     </div>
 </div>
+{{component:others.debugger}}
