@@ -26,7 +26,11 @@ class PageBuilder
         };
 
         # get the view
-        $view = file_get_contents(AppConstants::VIEWS_DIR . $content['view'] . '.php');
+        ob_start();
+        # include the view
+        include AppConstants::VIEWS_DIR . $content['view'] . '.php';
+        # store output as string
+        $view = ob_get_clean();
         # load the requested css assets
         $styles = $this->loadAssets('css', $assets);
         # load the requested js assets
