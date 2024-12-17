@@ -18,4 +18,11 @@ class Controller
         # render the page
         echo $page;
     }
+
+    public function return(int $code, bool $status, array $data = [])
+    {
+        http_response_code($code);
+        echo json_encode(['status' => $status, 'data' => $data]);
+        exit;
+    }
 }

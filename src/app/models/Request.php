@@ -38,26 +38,4 @@ class Request
         # return found token and id
         return ['id' => $scrfTokenId, 'token' => $csrfToken];
     }
-
-    public static function validateCSRF(UserController $controller)
-    {
-        # check csrf token for the POST request
-        $csrf = Request::getTokenCSRF();
-
-        # verify CSRF token id received
-        if (!$csrf['id'] || !isset($_SESSION['csrf_tokens'][$csrf['id']])) {
-            $controller->return(403, false, ['message' => 'Invalid CSRF Token identifier.']);
-        }
-
-        # extract the expected CSRF token
-        $expectedToken = $_SESSION['csrf_tokens'][$csrf['id']];
-
-        # verify the token received
-        if (!$csrf['token'] || $csrf['token'] !== $expectedToken) {
-            $controller->return(403, false, ['message' => 'Invalid CSRF Token submitted.']);
-        }
-
-        # delete CSRF token to prevent reuse
-        unset($_SESSION['csrf_tokens'][$csrf['id']]);
-    }
 }

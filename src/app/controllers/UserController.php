@@ -78,8 +78,6 @@ class UserController extends Controller
 
     public function login()
     {
-        # check CSRF token
-        $res = Request::validateCSRF($this);
         # retrieve custom header
         $header = Request::getCustomHeader();
         if ($header === 'login-user') {
@@ -121,19 +119,10 @@ class UserController extends Controller
 
     public function logout()
     {
-        # validate CSRF token
-        Request::validateCSRF($this);
         # execute the logout
         Auth::logout();
         # redirect the user to login page
         header('Location: /users/login');
         exit();
-    }
-
-    public function return(int $code, bool $status, array $data = [])
-    {
-        http_response_code($code);
-        echo json_encode(['status' => $status, 'data' => $data]);
-        exit;
     }
 }
