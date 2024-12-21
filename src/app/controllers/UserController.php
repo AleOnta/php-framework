@@ -60,7 +60,12 @@ class UserController extends Controller
             $pswId = $entity->storePassword($data->password);
             if ($pswId) {
                 $userId = $entity->create($data, $pswId);
-                $this->return(201, true, ['msg' => "User created correctly"]);
+                if ($userId) {
+                    # user created correctly
+                    $this->return(201, true, ['msg' => "User created correctly"]);
+                }
+                # internal server error
+                $this->return(500, false, ['msg' => 'An error has occurred']);
             }
             $this->return(500, false, ['errorMsg' => 'Error while creating the user']);
         }

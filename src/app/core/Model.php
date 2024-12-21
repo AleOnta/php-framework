@@ -63,7 +63,7 @@ class Model
     public function save()
     {
         # check table value
-        if (!isset($table)) {
+        if (!isset($this->table)) {
             throw new RuntimeException("Attribute TABLE must be defined.");
         }
 

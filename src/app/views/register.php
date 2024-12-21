@@ -1,5 +1,15 @@
+<?php
+
+use App\Models\Auth;
+
+$key = 'register';
+$csrfToken = Auth::generateCSRF($key);
+?>
+
 <div class="container w-full h-screen flex items-center justify-center">
     <form id="registration-form" method="POST" action="/users/register" class="p-6 bg-slate-600 bg-opacity-95 flex flex-col w-full max-w-md rounded-xl">
+        <input id="csrf_token_register" type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
+        <input id="csrf_id_register" type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($key); ?>">
         <div class="flex justify-start mb-6">
             <h2 class="text-3xl font-bold text-white">Register</h2>
             <p class="text-xs self-end text-white mt-4 ms-2">

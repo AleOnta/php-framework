@@ -10,13 +10,14 @@ use stdClass;
 
 class User extends Model
 {
-    protected string $firstName;
-    protected string $lastName;
-    protected string $userName;
+    public string $firstName;
+    public string $lastName;
+    public string $userName;
     protected string $email;
     protected ?int $passwordId;
-    protected string $birthdate;
+    public string $birthdate;
     protected int $status;
+    protected array $roles;
     protected string $createdAt;
     protected string $updatedAt;
 
@@ -24,8 +25,9 @@ class User extends Model
     {
         # instance of Model 
         parent::__construct();
-        # map the model in the database
+        # define table name for model
         $this->table = 'users';
+        # map the model in the database
         $this->modelMap = [
             'firstName' => 'firstname',
             'lastName' => 'lastname',
@@ -78,45 +80,61 @@ class User extends Model
     }
 
     # SETTERS
-    public function setFirstName($value)
+    public function setFirstName(string $firstName)
     {
-        $this->firstName = $value;
+        $this->firstName = $firstName;
     }
-    public function setLastName($value)
+    public function setLastName(string $lastName)
     {
-        return $this->lastName;
+        $this->lastName = $lastName;
     }
-    public function setUserName($value)
+    public function setUserName(string $userName)
     {
-        return $this->userName;
+        $this->userName = $userName;
     }
-    public function setEmail($value)
+    public function setEmail(string $email)
     {
-        return $this->email;
+        $this->email = $email;
     }
-    public function setPasswordId($value)
+    public function setPasswordId(int $passwordId)
     {
-        return $this->passwordId;
+        $this->passwordId = $passwordId;
     }
-    public function setBirthdate($value)
+    public function setBirthdate(string $birthdate)
     {
-        return $this->birthdate;
+        $this->birthdate = $birthdate;
     }
-    public function setStatus($value)
+    public function setStatus(int $status)
     {
         return $this->status;
+    }
+    public function setCreatedAt(string $createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+    public function setUpdatedAt(string $updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
     }
 
     # retrieve and return user by its email
     public function getUserByEmail(string $email)
     {
-        return $this->find(['email' => $email]);
+        $data = $this->find(['email' => $email]);
+        if ($data) {
+            return $this->hydrate($data);
+        }
+        return false;
     }
 
     # retrieve and return user by its username
     public function getUserByUsername(string $username)
     {
-        return $this->find(['username' => $username]);
+        $data = $this->find(['username' => $username]);
+        if ($data) {
+            return $this->hydrate($data);
+        }
+        return false;
     }
 
     # retrieve user hashed password by id
@@ -148,7 +166,7 @@ class User extends Model
     }
 
     # persist a new user in the db
-    public function create(stdClass $data, int $passwordId)
+    public function create(stdClass $data, int $passwordId, string $role = 'user')
     {
         # set values into instance
         $this->firstName = $data->firstname;
@@ -159,7 +177,44 @@ class User extends Model
         $this->birthdate = $data->birthdate;
 
         # persist the user
-        $this->save();
+        $userId = $this->save();
+        # create the role record
+        $role = $this->addUserRole($userId);
+        # return result 
+        if ($role) return $userId;
+        else return false;
+    }
+
+    public function addUserRole(int $userId, mixed $roles = ['user'])
+    {
+        # define INSERT query
+        $stmt = $this->db->prepare("INSERT INTO user_roles (user_id, role_id) VALUES (:user_id, :role_id);");
+        # create role for each record received
+        foreach ($roles as $role) {
+            # retrieve the role id
+            $roleId = $this->getRoleId($role);
+            if ($roleId) {
+                # create the role record
+                $success = $stmt->execute(['user_id' => $userId, 'role_id' => $roleId]);
+            }
+        }
+        return $success ?? false;
+    }
+
+    # hydration function that returns an instance of the user received
+    public function hydrate(array $data)
+    {
+        $user = new User();
+        $user->setFirstName($data['fistname']);
+        $user->setLastName($data['lastname']);
+        $user->setUserName($data['username']);
+        $user->setEmail($data['email']);
+        $user->setPasswordId($data['password_id']);
+        $user->setBirthdate($data['birthdate']);
+        $user->setStatus($data['status']);
+        $user->setCreatedAt($data['created_at']);
+        $user->setUpdatedAt($data['updated_at']);
+        return $user;
     }
 
     # function that validate user inputs for user creation
@@ -233,5 +288,17 @@ class User extends Model
 
         # data is okay
         return ['status' => true];
+    }
+
+    private function getRoleId($label)
+    {
+        # prepare SELECT query
+        $stmt = $this->db->prepare("SELECT id FROM roles WHERE label = :label LIMIT 1;");
+        # bind the params
+        $stmt->bindParam(':label', $label, PDO::PARAM_STR);
+        # execute the query
+        $stmt->execute();
+        # return the id or false
+        return $stmt->fetch(PDO::FETCH_COLUMN) ?? false;
     }
 }

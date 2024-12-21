@@ -3,7 +3,7 @@
 use App\Models\Auth;
 
 $key = 'login';
-$csrfToken = Auth::generateCSRF('login');
+$csrfToken = Auth::generateCSRF($key);
 ?>
 
 <div class="flex flex-col items-center justify-center h-screen dark">

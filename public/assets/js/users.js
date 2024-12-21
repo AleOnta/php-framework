@@ -21,11 +21,14 @@ async function register(event) {
         json[key] = value;
     });
 
+    const csrf = getCSRFTokens('register');
     const res = await fetch("/users/register", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-Custom-Header': 'custom-register-user'
+            'X-Custom-Header': 'custom-register-user',
+            'X-CSRF-Token': csrf.token,
+            'X-CSRF-Token-Id': csrf.id
         },
         body: JSON.stringify(json)
     });
@@ -73,6 +76,13 @@ async function login(event) {
     if (data?.status) {
         window.location.href = '/';
     }
+}
+
+function getCSRFTokens(label) {
+    return {
+        'id':document.getElementById('csrf_id_'+label).value,
+        'token':document.getElementById('csrf_token_'+label).value
+    };
 }
 
 function displayErrors(errors) {
