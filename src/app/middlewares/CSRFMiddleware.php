@@ -24,8 +24,6 @@ class CSRFMiddleware extends Middleware
             Middleware::return(403, false, ['message' => 'Invalid CSRF Token submitted.']);
         }
 
-        # delete CSRF token to prevent reuse
-        unset($_SESSION['csrf_tokens'][$csrf['id']]);
         # allow the request
         $next();
     }
