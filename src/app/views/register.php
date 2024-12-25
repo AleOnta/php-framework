@@ -7,9 +7,10 @@ $csrfToken = Auth::generateCSRF($key);
 ?>
 
 <div class="container w-full h-screen flex items-center justify-center">
+    {{component:others.debugger}}
     <form id="registration-form" method="POST" action="/users/register" class="p-6 bg-slate-600 bg-opacity-95 flex flex-col w-full max-w-md rounded-xl">
         <input id="csrf_token_register" type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
-        <input id="csrf_id_register" type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($key); ?>">
+        <input id="csrf_id_register" type="hidden" name="csrf_id" value="<?php echo htmlspecialchars($key); ?>">
         <div class="flex justify-start mb-6">
             <h2 class="text-3xl font-bold text-white">Register</h2>
             <p class="text-xs self-end text-white mt-4 ms-2">
@@ -70,12 +71,11 @@ $csrfToken = Auth::generateCSRF($key);
                 required>
         </span>
         <span class="error-container">
-            {{component:inputs.errorTooltip {"error":"password_check", "dir":"right"}}}
             <input
                 id="password_check"
                 class="my-2 bg-gray-700 text-gray-200 border-0 rounded-md p-2 shadow-md focus:outline-none focus:ring-1 transition ease-in-out duration-150 w-full"
                 type="password"
-                name="password"
+                name="password_check"
                 placeholder="Confirm Password"
                 required>
         </span>

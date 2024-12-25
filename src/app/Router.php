@@ -2,14 +2,20 @@
 
 namespace App;
 
+use App\Core\Container;
 use App\Utility\AppConstants;
 
 class Router
 {
-
     protected $routes = [];
     protected $defaultRoute;
     protected $groupPrefix = '';
+    private Container $container;
+
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
+    }
 
     private function addRoute($route, $controller, $action, $method, $middlewares)
     {
@@ -94,7 +100,7 @@ class Router
             $middlewareStack = $route['middleware'] ?? [];
             # execute the middleware before invoking the action
             $this->runMiddleware($middlewareStack, function () use ($controller, $action) {
-                $controller = new $controller();
+                $controller = $this->container->get($controller);
                 $controller->$action();
             });
         } else {

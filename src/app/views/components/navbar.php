@@ -25,9 +25,9 @@ use App\Models\Auth; ?>
             </li>
             <li>
                 <div id="user-dropdown-btn" class="bg-slate-800 text-white font-semibold rounded-full w-8 h-8 flex justify-center items-center cursor-pointer">
-                    <?php if (Auth::check()): ?>
+                    <?php if (auth()->check()): ?>
                         <p class="m-0">
-                            <?= substr(Auth::user()['firstname'], 0, 1) . substr(Auth::user()['lastname'], 0, 1) ?>
+                            <?= substr(auth()->user()['firstname'], 0, 1) . substr(auth()->user()['lastname'], 0, 1) ?>
                         </p>
                         {{component:user.navbarDropdown}}
                     <?php else: ?>

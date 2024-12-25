@@ -18,6 +18,9 @@ async function register(event) {
     let json = {};
     const formData = new FormData(form);
     formData.forEach((value, key) => {
+        if (key === 'csrf_token' || key === 'csrf_id') {
+            return;
+        }
         json[key] = value;
     });
 
@@ -43,9 +46,9 @@ async function register(event) {
 async function login(event) {
     event.preventDefault();
 
+    console.log('login')
     // define constant for csrf token validation on server side
-    const csrfToken = document.querySelector('#csrf_token_login').value;
-    const csrfTokenId = document.querySelector('#csrf_id_login').value
+    const csrf = getCSRFTokens('login');
 
     let json = {
         'email':form.item(2).value,
@@ -57,8 +60,8 @@ async function login(event) {
         headers: {
             'Content-Type': 'application/json',
             'X-Custom-Header': 'login-user',
-            'X-CSRF-Token': csrfToken,
-            'X-CSRF-Token-Id': csrfTokenId
+            'X-CSRF-Token': csrf.token,
+            'X-CSRF-Token-Id': csrf.id
         },
         body: JSON.stringify(json)
     });

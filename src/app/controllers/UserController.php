@@ -4,11 +4,26 @@ namespace App\Controllers;
 
 use App\Controller;
 use App\Models\User;
+use App\Models\Role;
 use App\Models\Auth;
 use App\Models\Request;
+use App\Services\RoleService;
+use App\Services\UserService;
+use App\Services\PasswordService;
+use LDAP\Result;
 
 class UserController extends Controller
 {
+    private UserService $userService;
+    private RoleService $roleService;
+    private PasswordService $passwordService;
+
+    public function __construct(UserService $userService, RoleService $roleService, PasswordService $passwordService)
+    {
+        $this->userService = $userService;
+        $this->roleService = $roleService;
+        $this->passwordService = $passwordService;
+    }
 
     public function showRegistrationForm()
     {
@@ -37,35 +52,32 @@ class UserController extends Controller
             ];
 
             # validate the user
-            $errors = User::validateUser($user);
+            $errors = $this->userService->validateUserData($user);
             if ($errors['count'] > 0) {
                 # bad user input
                 $this->return(400, false, $errors);
             }
 
-            # check if the user already exists
-            $entity = new User();
-            $email = $entity->getUserByEmail($data->email);
-            if ($email !== false) {
-                $this->return(400, false, ['errorMsg' => "Email {$data->email} has already been registered"]);
+            # validate the password
+            $errors = $this->passwordService->validatePassword($data->password, $data->password_check);
+            if ($errors['count'] > 0) {
+                # bad user input
+                $this->return(400, false, $errors);
             }
 
-            # check if username is already been used
-            $username = $entity->getUserByUsername($data->username);
-            if ($username !== false) {
-                $this->return(400, false, ['errorMsg' => "Username '{$data->username}' isn't available"]);
-            }
-
-            # create the new user
-            $pswId = $entity->storePassword($data->password);
+            # store the user password
+            $pswId = $this->passwordService->storePassword($data->password);
             if ($pswId) {
-                $userId = $entity->create($data, $pswId);
+                $userId = $this->userService->createUser($user, $pswId);
                 if ($userId) {
-                    # user created correctly
-                    $this->return(201, true, ['msg' => "User created correctly"]);
+                    # assign user role
+                    if ($this->roleService->addRoleToUser($userId, ['user'])) {
+                        # delete csrf token to avoid reuse
+                        Request::deleteTokenCSRF('register');
+                        # user created correctly
+                        $this->return(201, true, ['msg' => "User created correctly"]);
+                    }
                 }
-                # internal server error
-                $this->return(500, false, ['msg' => 'An error has occurred']);
             }
             $this->return(500, false, ['errorMsg' => 'Error while creating the user']);
         }
@@ -83,51 +95,48 @@ class UserController extends Controller
 
     public function login()
     {
-        # retrieve custom header
         $header = Request::getCustomHeader();
         if ($header === 'login-user') {
-            # retrieve submitted data
             $data = Request::getJsonBody();
-            $credentials = [
-                'email' => $data->email,
-                'password' => $data->password
-            ];
-
-            # validate submitted data
-            $validation = User::validateCredentials($credentials);
-            if (!$validation['status']) {
-                $this->return(401, false, $validation);
+            # validate user inputs
+            $res = $this->userService->validateUserCredentials(['email' => $data->email, 'password' => $data->password]);
+            if (!$res['status']) {
+                $this->return(401, false, ['message' => $res['message']]);
             }
-
-            # check if user exists
-            $entity = new User();
-            $user = $entity->getUserByEmail($credentials['email']);
-            if ($user === false) {
-                $this->return(401, false, ['message' => "No account associated with email."]);
+            # match user in db
+            $user = $this->userService->getUserByEmail($data->email, $data->password);
+            if (!$user['status']) {
+                $this->return(401, false, ['message' => $user['message']]);
             }
-
-            # retrieve user hashed password
-            $hash = $entity->getUserPasswordById($user['password_id']);
-            if (!password_verify($credentials['password'], $hash)) {
-                $this->return(401, false, ['message' => "Wrong password sumbitted."]);
+            # verify user password
+            $password = $this->passwordService->matchUserPassword($user['data']['password_id'], $data->password);
+            if (!$password['status']) {
+                $this->return(401, false, ['message' => $password['message']]);
             }
-
-            # save user data in session
-            Auth::startSession();
-            $_SESSION['user_id'] = $user['id'];
+            # delete csrf token to avoid reuse
+            Request::deleteTokenCSRF('login');
+            # set user data in session
             $_SESSION['logged_in'] = true;
-
-            # return ok response
-            $this->return(200, true, ['msg' => 'Successfully logged in.']);
+            $_SESSION['user_id'] = $user['data']['id'];
+            # confirm login
+            $this->return(200, true, ['message' => 'Logged in correctly.']);
         }
+        $this->return(401, false, ['message' => 'Wrong request header.']);
     }
 
     public function logout()
     {
-        # execute the logout
-        Auth::logout();
-        # redirect the user to login page
+        # clear session data and logout
+        if (isset($_SESSION['logged_in'])) {
+            if ($_SESSION['logged_in'] === true) {
+                unset($_SESSION['logged_in']);
+                unset($_SESSION['user_id']);
+            }
+        }
+        # delete csrf token to avoid reuse
+        Request::deleteTokenCSRF('logout');
+        # confirm logout
+        http_response_code(200);
         header('Location: /users/login');
-        exit();
     }
 }

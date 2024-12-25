@@ -12,7 +12,7 @@ $csrfToken = Auth::generateCSRF($key);
             <h2 class="text-2xl font-bold text-gray-200">Login</h2>
             {{component:errorMessage}}
         </div>
-        <form class="flex flex-col" id="login-form">
+        <form class="flex flex-col" method="POST" id="login-form">
             <input id="csrf_token_login" type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
             <input id="csrf_id_login" type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($key); ?>">
             <input
