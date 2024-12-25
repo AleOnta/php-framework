@@ -9,8 +9,10 @@ class AppConstants
     # define other child paths
     public const ENV_PATH = self::ROOT_DIR . ".env";
     public const VIEWS_DIR = self::ROOT_DIR . "src/app/views/";
+    public const CONFIG_DIR = self::ROOT_DIR . "config/";
     public const ASSETS_DIR = self::ROOT_DIR . "public/assets/";
     public const ROUTES_DIR = self::ROOT_DIR . "src/app/routes/";
+    public const HELPERS_DIR = self::ROOT_DIR . "src/app/helpers/";
     public const MIGRATIONS_DIR = self::ROOT_DIR . "src/app/migrations/";
     public const TEMPLATES_DIR = self::ROOT_DIR . "src/app/views/templates/";
     public const COMPONENTS_DIR = self::ROOT_DIR . "src/app/views/components/";
