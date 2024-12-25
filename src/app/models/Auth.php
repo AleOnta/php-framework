@@ -2,12 +2,20 @@
 
 namespace App\Models;
 
+use App\Core\MySQL;
 use App\Models\User;
+use App\Repositories\UserRepository;
 
 class Auth
 {
     # logged in user data storage
     public static ?array $cachedUser = null;
+    private static UserRepository $userRepository;
+
+    public function __construct()
+    {
+        self::$userRepository = new UserRepository(MySQL::connect());
+    }
 
     public static function startSession()
     {
@@ -40,20 +48,13 @@ class Auth
 
         # retrieve the logged in user
         $userId = $_SESSION['user_id'];
-        $user = new User();
-        $user = $user->findById($userId);
-
-        # set the user data in cache
-        foreach ($user as $key => $val) {
-            if ($key === 'password_id') continue;
-            self::$cachedUser[$key] = $val;
-        }
+        self::$cachedUser = self::$userRepository->findById($userId);
 
         # returns the user data
         return self::$cachedUser;
     }
 
-    public static function logout()
+    public function logout()
     {
         # check if a session exists - if not creates one
         if (session_status() === PHP_SESSION_NONE) {
