@@ -6,7 +6,7 @@ use App\Controllers\UserController;
 use App\Middlewares\CSRFMiddleware;
 
 # create a new router
-$router = new Router();
+$router = new Router($container);
 
 # create the home route at /
 $router->get('/', HomeController::class, 'index');

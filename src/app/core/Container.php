@@ -2,7 +2,7 @@
 
 namespace App\Core;
 
-class Contanier
+class Container
 {
     private array $services = [];
 

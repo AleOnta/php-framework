@@ -16,7 +16,7 @@ class Model
     public function __construct()
     {
         # establish mysql connection
-        $this->db = MySQL::getInstance()->getConnection();
+        $this->db = MySQL::connect();
     }
 
     # find an entity by id in the corresponding table
