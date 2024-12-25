@@ -38,4 +38,11 @@ class Request
         # return found token and id
         return ['id' => $scrfTokenId, 'token' => $csrfToken];
     }
+
+    public static function deleteTokenCSRF(string $key)
+    {
+        if (isset($_SESSION['csrf_tokens'][$key])) {
+            unset($_SESSION['csrf_tokens'][$key]);
+        }
+    }
 }
