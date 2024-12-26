@@ -37,4 +37,3 @@ $csrfToken = Auth::generateCSRF($key);
         </form>
     </div>
 </div>
-{{component:others.debugger}}

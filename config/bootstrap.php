@@ -1,6 +1,5 @@
 <?php
 
-use App\Controllers\HomeController;
 use App\Core\MySQL;
 use App\Models\Auth;
 use App\Core\Container;
@@ -10,6 +9,7 @@ use App\Utility\AppConstants;
 use App\Services\UserService;
 use App\Services\RoleService;
 use App\Services\PasswordService;
+use App\Controllers\HomeController;
 use App\Controllers\UserController;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;

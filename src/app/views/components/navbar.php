@@ -9,30 +9,28 @@ use App\Models\Auth; ?>
         </div>
         <ul class="px-2 ml-auto flex items-center space-x-2 top-full left-0 right-0 text-sm">
             <li>
-                <a href="#" class="inline-flex items-center sm:px-3 hover:bg-gray-50">
+                <a href="/" class="inline-flex items-center sm:px-3 hover:bg-gray-50">
                     <span>Home</span>
                 </a>
             </li>
             <li>
-                <a href="#" class="inline-flex items-center sm:px-3 hover:bg-gray-50">
+                <a href="/" class="inline-flex items-center sm:px-3 hover:bg-gray-50">
                     <span>Products</span>
                 </a>
             </li>
             <li>
-                <a href="#" class="inline-flex items-center sm:px-3 hover:bg-gray-50">
+                <a href="/" class="inline-flex items-center sm:px-3 hover:bg-gray-50">
                     <span>About us</span>
                 </a>
             </li>
             <li>
                 <div id="user-dropdown-btn" class="bg-slate-800 text-white font-semibold rounded-full w-8 h-8 flex justify-center items-center cursor-pointer">
-                    <?php if (auth()->check()): ?>
-                        <p class="m-0">
-                            <?= substr(auth()->user()['firstname'], 0, 1) . substr(auth()->user()['lastname'], 0, 1) ?>
-                        </p>
-                        {{component:user.navbarDropdown}}
+                    <?php if (!auth()->check()): ?>
+                        ?
                     <?php else: ?>
-                        <p class="m-0">?</p>
+                        <?php echo htmlspecialchars(substr(auth()->user()['firstname'], 0, 1) . substr(auth()->user()['lastname'], 0, 1)) ?>
                     <?php endif; ?>
+                    {{component:user.navbarDropdown}}
                 </div>
             </li>
         </ul>
