@@ -10,6 +10,7 @@ use App\Services\UserService;
 use App\Services\RoleService;
 use App\Services\PasswordService;
 use App\Controllers\HomeController;
+use App\Controllers\RootController;
 use App\Controllers\UserController;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
@@ -40,7 +41,7 @@ $container->set(RoleService::class, fn($c) => new RoleService($c->get(RoleReposi
 $container->set(PasswordService::class, fn($c) => new PasswordService($c->get(PasswordRepository::class)));
 
 # CONTROLLERS
-$container->set(HomeController::class, fn($c) => new HomeController());
+$container->set(RootController::class, fn($c) => new RootController());
 $container->set(UserController::class, fn($c) => new UserController(
     $c->get(UserService::class),
     $c->get(RoleService::class),

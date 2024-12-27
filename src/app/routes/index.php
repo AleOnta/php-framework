@@ -2,6 +2,7 @@
 
 use App\Router;
 use App\Controllers\HomeController;
+use App\Controllers\RootController;
 use App\Controllers\UserController;
 use App\Middlewares\AuthMiddleware;
 use App\Middlewares\CSRFMiddleware;
@@ -11,7 +12,9 @@ use App\Middlewares\RoleMiddleware;
 $router = new Router($container);
 
 # create the home route at /
-$router->get('/', HomeController::class, 'index');
+$router->get('/', RootController::class, 'index');
+# unauthorized response
+$router->get('/unauthorized', RootController::class, 'unauthorized');
 
 $router->group('/users', function ($router) {
     # registration routes

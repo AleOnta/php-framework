@@ -23,8 +23,14 @@ class RoleMiddleware extends Middleware
         }
 
         if (!$this->hasRole(auth()->user()->getRoles(), $this->requiredRoles)) {
+            # set error msg in session
+            $message = "You don't have the required access scope to render the content of this page<br>";
+            $message .= "Gain the correct role to view this page.";
+            $_SESSION['error'] = [];
+            $_SESSION['error']['title'] = 'Unauthorized - Access Denied';
+            $_SESSION['error']['message'] = $message;
             # return unauthorized response
-            $this->return(403, false);
+            $this->redirect('/unauthorized', 403);
         }
 
         # allow request

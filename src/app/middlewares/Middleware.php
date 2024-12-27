@@ -12,9 +12,9 @@ class Middleware
         exit;
     }
 
-    public static function redirect($location)
+    public static function redirect($location, $code = 302)
     {
-        http_response_code(302);
+        http_response_code($code);
         header("Location: {$location}");
         exit;
     }
