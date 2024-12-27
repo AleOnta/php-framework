@@ -5,6 +5,7 @@ use App\Controllers\HomeController;
 use App\Controllers\UserController;
 use App\Middlewares\AuthMiddleware;
 use App\Middlewares\CSRFMiddleware;
+use App\Middlewares\RoleMiddleware;
 
 # create a new router
 $router = new Router($container);
@@ -23,7 +24,15 @@ $router->group('/users', function ($router) {
     $router->post('/logout', UserController::class, 'logout', [CSRFMiddleware::class]);
 
     # show profile route
-    $router->get('/show/{id}', UserController::class, 'show', [AuthMiddleware::class]);
+    $router->get(
+        '/show/{id}',
+        UserController::class,
+        'show',
+        [
+            AuthMiddleware::class,
+            [RoleMiddleware::class, ['requiredRoles' => ['admin']]]
+        ]
+    );
 });
 
 # Routes the request
