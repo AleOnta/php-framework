@@ -17,7 +17,7 @@ if (auth()->check()) {
                         <p class="m-0">?</p>
                     <?php else: ?>
                         <p class="m-0 text-base">
-                            <?= substr(Auth::user()['firstname'], 0, 1) . substr(Auth::user()['lastname'], 0, 1) ?>
+                            <?= substr(Auth::user()->getFirstName(), 0, 1) . substr(Auth::user()->getLastName(), 0, 1) ?>
                         </p>
                     <?php endif; ?>
                 </div>
@@ -28,7 +28,7 @@ if (auth()->check()) {
                                 <?php if (!auth()->check()): ?>
                                     No account
                                 <?php else: ?>
-                                    <?php echo Auth::user()['firstname'] . ' ' . Auth::user()['lastname'] ?>
+                                    <?php echo Auth::user()->getFirstName() . ' ' . Auth::user()->getLastName() ?>
                                     <span
                                         aria-label="verified"
                                         class="absolute top-1/2 -translate-y-1/2 right-0 inline-block rounded-full">
@@ -57,7 +57,7 @@ if (auth()->check()) {
                     </div>
                     <?php if (auth()->check()): ?>
                         <p class="font-normal text-base leading-tight text-gray-500 truncate">
-                            <?php echo htmlspecialchars(Auth::user()['email']) ?>
+                            <?php echo htmlspecialchars(Auth::user()->getEmail()) ?>
                         </p>
                     <?php endif; ?>
                 </div>

@@ -28,7 +28,7 @@ use App\Models\Auth; ?>
                     <?php if (!auth()->check()): ?>
                         ?
                     <?php else: ?>
-                        <?php echo htmlspecialchars(substr(auth()->user()['firstname'], 0, 1) . substr(auth()->user()['lastname'], 0, 1)) ?>
+                        <?php echo htmlspecialchars(substr(auth()->user()->getFirstName(), 0, 1) . substr(auth()->user()->getLastName(), 0, 1)) ?>
                     <?php endif; ?>
                     {{component:user.navbarDropdown}}
                 </div>
