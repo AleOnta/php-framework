@@ -11,4 +11,11 @@ class Middleware
         echo json_encode(['status' => $status, 'data' => $data]);
         exit;
     }
+
+    public static function redirect($location)
+    {
+        http_response_code(302);
+        header("Location: {$location}");
+        exit;
+    }
 }
