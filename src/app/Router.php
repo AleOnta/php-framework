@@ -118,13 +118,18 @@ class Router
         }
 
         # get the first required middleware
-        $middlewareClass = array_shift($middlewareStack);
-        # create instance of that middleware
-        $middleware = new $middlewareClass();
-        # run the middleware and pass the remaining stack
+        $middlewareItem = array_shift($middlewareStack);
+        if (is_array($middlewareItem)) {
+            [$middlewareClass, $args] = $middlewareItem;
+            $middleware = new $middlewareClass(...$args);
+        } else {
+            $middlewareClass = $middlewareItem;
+            $middleware = new $middlewareClass();
+        }
+
+        # Run the middleware
         $middleware->handle($_SERVER, function () use ($middlewareStack, $next) {
-            # run the middleware til stack is empty
-            $this->runMiddleware($middlewareStack, $next());
+            $this->runMiddleware($middlewareStack, $next);
         });
     }
 
