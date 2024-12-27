@@ -57,6 +57,10 @@ class User
     {
         return $this->updatedAt;
     }
+    public function getRoles()
+    {
+        return $this->roles;
+    }
 
     # SETTERS
     public function setId(int $id)
@@ -89,7 +93,7 @@ class User
     }
     public function setStatus(int $status)
     {
-        return $this->status;
+        $this->status = $status;
     }
     public function setCreatedAt(string $createdAt)
     {
@@ -98,5 +102,9 @@ class User
     public function setUpdatedAt(string $updatedAt)
     {
         $this->updatedAt = $updatedAt;
+    }
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
     }
 }

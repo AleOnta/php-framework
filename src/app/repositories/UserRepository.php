@@ -51,6 +51,25 @@ class UserRepository extends Repository
         return $stmt->fetch(PDO::FETCH_ASSOC) ?? false;
     }
 
+    public function getUserByIdWithRoles(int $id)
+    {
+        # define the query
+        $stmt = $this->db->prepare(
+            "SELECT users.*, GROUP_CONCAT(roles.label) AS roles 
+             FROM users
+             LEFT JOIN user_roles ON users.id = user_roles.user_id
+             LEFT JOIN roles ON roles.id = user_roles.role_id
+             WHERE users.id = :id
+             GROUP BY users.id;"
+        );
+        # execute the query
+        $stmt->execute(['id' => $id]);
+        # extract data
+        $user = $stmt->fetch();
+        # hydrate in model
+        return $this->hydrate($user) ?? false;
+    }
+
     public function hydrate(array $data)
     {
         $user = new User();
@@ -60,10 +79,15 @@ class UserRepository extends Repository
         $user->setUserName($data['username']);
         $user->setEmail($data['email']);
         $user->setPasswordId($data['password_id']);
-        $user->setBirthdate($data['birthdate']);
+        $user->setBirthdate($data['dob']);
         $user->setStatus($data['status']);
         $user->setCreatedAt($data['created_at']);
         $user->setUpdatedAt($data['updated_at']);
+        # if roles were extracted, set them
+        if (isset($data['roles'])) {
+            $roles = explode(',', $data['roles']);
+            $user->setRoles($roles);
+        }
         return $user;
     }
 

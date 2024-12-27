@@ -9,7 +9,7 @@ use App\Repositories\UserRepository;
 class Auth
 {
     # logged in user data storage
-    public static ?array $cachedUser = null;
+    public static ?User $cachedUser = null;
     private static UserRepository $userRepository;
 
     public function __construct()
@@ -34,7 +34,7 @@ class Auth
         return isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
     }
 
-    public static function user(): ?array
+    public static function user(): ?User
     {
         # if user data is in cache returns it
         if (self::$cachedUser !== null) {
@@ -48,7 +48,7 @@ class Auth
 
         # retrieve the logged in user
         $userId = $_SESSION['user_id'];
-        self::$cachedUser = self::$userRepository->findById($userId);
+        self::$cachedUser = self::$userRepository->getUserByIdWithRoles($userId);
 
         # returns the user data
         return self::$cachedUser;
