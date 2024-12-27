@@ -3,6 +3,7 @@
 use App\Router;
 use App\Controllers\HomeController;
 use App\Controllers\UserController;
+use App\Middlewares\AuthMiddleware;
 use App\Middlewares\CSRFMiddleware;
 
 # create a new router
@@ -20,6 +21,9 @@ $router->group('/users', function ($router) {
     $router->post('/login', UserController::class, 'login', [CSRFMiddleware::class]);
     # logout route
     $router->post('/logout', UserController::class, 'logout', [CSRFMiddleware::class]);
+
+    # show profile route
+    $router->get('/show/{id}', UserController::class, 'show', [AuthMiddleware::class]);
 });
 
 # Routes the request

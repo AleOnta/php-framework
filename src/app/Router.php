@@ -17,19 +17,18 @@ class Router
         $this->container = $container;
     }
 
-    private function addRoute($route, $controller, $action, $method, $middlewares)
+    private function addRoute(string $route, string $controller, string $action, string $method, array $middlewares)
     {
-        if ($route === '/users/login') {
-            print_r($middlewares);
-            die();
-        }
+        # compose full route for grouped routes
         $fullRoute = $this->groupPrefix . $route;
-        $this->routes[$method][$fullRoute] = [
+        # extract the route pattern for parameters retrieval
+        $pattern = preg_replace('/\{(\w+)\}/', '(?P<$1>[^/]+)', $fullRoute);
+        $pattern = "#^" . $pattern . "$#";
+        # make the route available
+        $this->routes[$method][$pattern] = [
             'controller' => $controller,
             'action' => $action,
             'middleware' => $middlewares,
-            # parameters will be implemented in the future
-            'params' => []
         ];
     }
 
@@ -85,28 +84,28 @@ class Router
     # handles incoming requests and routes them to the correct controller
     public function dispatch()
     {
+        # extract the requested uri and method
         $uri = strtok($_SERVER['REQUEST_URI'], '?');
         $method = $_SERVER['REQUEST_METHOD'];
-
-        # check if the route exists
-        if (isset($this->routes[$method][$uri])) {
-            # extract the route
-            $route = $this->routes[$method][$uri];
-            # get the related controller
-            $controller = $route['controller'];
-            # get the related action
-            $action = $route['action'];
-            # get the middleware stack or empty arr
-            $middlewareStack = $route['middleware'] ?? [];
-            # execute the middleware before invoking the action
-            $this->runMiddleware($middlewareStack, function () use ($controller, $action) {
-                $controller = $this->container->get($controller);
-                $controller->$action();
-            });
-        } else {
-            # redirect to default or 404
-            $this->handleRouteNotFound();
+        # loop through all method routes
+        foreach ($this->routes[$method] as $pattern => $routeInfo) {
+            # match the requested pattern
+            if (preg_match($pattern, $uri, $matches)) {
+                # extract the params
+                $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+                # resolve controller and action
+                $controller = $this->container->get($routeInfo['controller']);
+                $action = $routeInfo['action'];
+                # execute required middlewares
+                $this->runMiddleware($routeInfo['middleware'], function () use ($controller, $action, $params) {
+                    # proceed with action
+                    call_user_func_array([$controller, $action], $params);
+                });
+                return;
+            }
         }
+        # redirect to default or 404
+        $this->handleRouteNotFound();
     }
 
     # run the first middleware inside the middleware stack
@@ -150,5 +149,6 @@ class Router
         include AppConstants::VIEWS_DIR . '404.php';
         echo "<h3>Available Routes:</h3>";
         echo "<p>" . print_r($this->routes) . "</p>";
+        exit;
     }
 }
