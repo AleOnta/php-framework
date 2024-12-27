@@ -139,4 +139,14 @@ class UserController extends Controller
         http_response_code(200);
         header('Location: /users/login');
     }
+
+    public function show($id)
+    {
+        # define the content of the page
+        $content = ['page_title' => 'Show', 'view' => 'show'];
+        # define the assets required
+        $assets = ['css' => [], 'js' => ['index']];
+        # render the page
+        $this->render('basic', $content, $assets);
+    }
 }
