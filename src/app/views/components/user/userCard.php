@@ -3,8 +3,12 @@
         <img class="mx-auto rounded-full h-32 w-32" src="http://localhost:8000\assets\images\user_placeholder.png" alt="author avatar">
         <div class="space-y-2">
             <div class="flex justify-center items-center flex-col space-y-3 text-lg font-medium leading-6">
-                <h3 class="text-white">John Doe</h3>
-                <p class="text-indigo-300">Web Developer</p>
+                <h3 class="text-white">
+                    <?= auth()->user()->getFirstName() . ' ' . auth()->user()->getLastName() ?>
+                </h3>
+                <p class="text-indigo-300">
+                    <?= auth()->user()->getUserName() ?>
+                </p>
                 <div class="flex justify-center mt-5 space-x-5"><a href="#" target="_blank" rel="noopener noreferrer"
                         class="inline-block text-gray-400"><span class="sr-only">Twitter</span><svg
                             stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512"

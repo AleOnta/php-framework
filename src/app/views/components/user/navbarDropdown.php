@@ -113,7 +113,7 @@ if (auth()->check()) {
                     </a>
                 <?php else: ?>
                     <a
-                        href="/"
+                        href="/users/show/<?php echo auth()->user()->getId() ?>"
                         class="flex items-center leading-6 space-x-3 py-3 px-4 w-full text-base text-gray-600 focus:outline-none hover:bg-gray-100 rounded-md">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

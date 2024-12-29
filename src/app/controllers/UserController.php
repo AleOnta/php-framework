@@ -140,7 +140,7 @@ class UserController extends Controller
         header('Location: /users/login');
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         # define the content of the page
         $content = ['page_title' => 'Show', 'view' => 'show'];
