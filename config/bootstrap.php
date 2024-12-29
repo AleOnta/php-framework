@@ -30,6 +30,9 @@ $container = new Container();
 # DATABASES
 $container->set('db', fn() => MySQL::connect());
 
+# MIGRATIONS
+$container->set(MigrationRunner::class, fn($c) => new MigrationRunner($c->get('db')));
+
 # REPOSITORIES
 $container->set(UserRepository::class, fn($c) => new UserRepository($c->get('db')));
 $container->set(RoleRepository::class, fn($c) => new RoleRepository($c->get('db')));
@@ -41,14 +44,12 @@ $container->set(RoleService::class, fn($c) => new RoleService($c->get(RoleReposi
 $container->set(PasswordService::class, fn($c) => new PasswordService($c->get(PasswordRepository::class)));
 
 # CONTROLLERS
-$container->set(RootController::class, fn($c) => new RootController());
+$container->set(RootController::class, fn($c) => new RootController($c->get(MigrationRunner::class)));
 $container->set(UserController::class, fn($c) => new UserController(
     $c->get(UserService::class),
     $c->get(RoleService::class),
     $c->get(PasswordService::class)
 ));
-
-# run migration if needed
 
 # creates a new session
 auth()->startSession();
