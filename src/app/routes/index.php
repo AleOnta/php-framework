@@ -1,7 +1,6 @@
 <?php
 
 use App\Router;
-use App\Controllers\HomeController;
 use App\Controllers\RootController;
 use App\Controllers\UserController;
 use App\Middlewares\AuthMiddleware;
@@ -15,7 +14,7 @@ $router = new Router($container);
 $router->get('/', RootController::class, 'index');
 # unauthorized response
 $router->get('/unauthorized', RootController::class, 'unauthorized');
-
+# create a group of routes
 $router->group('/users', function ($router) {
     # registration routes
     $router->get('/register', UserController::class, 'showRegistrationForm');
@@ -27,15 +26,14 @@ $router->group('/users', function ($router) {
     $router->post('/logout', UserController::class, 'logout', [CSRFMiddleware::class]);
 
     # show profile route
-    $router->get(
-        '/show/{id}',
-        UserController::class,
-        'show',
-        [
-            AuthMiddleware::class,
-            [RoleMiddleware::class, ['requiredRoles' => ['admin']]]
-        ]
-    );
+    $router->get('/show/{id}', UserController::class, 'show', [AuthMiddleware::class, [RoleMiddleware::class, ['requiredRoles' => ['admin']]]]);
+});
+
+$router->group('/migrations', function ($router) {
+    # create a test route for migrations reporting
+    $router->get('', RootController::class, 'migrations', [AuthMiddleware::class, [RoleMiddleware::class, ['requiredRoles' => ['admin']]]]);
+    # create a route for running missing migrations
+    $router->post('/up', RootController::class, 'migrationsUp', [AuthMiddleware::class, [RoleMiddleware::class, ['requiredRoles' => ['admin']]], CSRFMiddleware::class]);
 });
 
 # Routes the request

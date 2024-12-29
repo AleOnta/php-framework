@@ -20,3 +20,29 @@ document.addEventListener('click', function (e) {
         toggleUserDropdown();
     }
 });
+
+// retrieve migrations runner form
+let migrationsForm = document.getElementById('migrations-run-form');
+// add eventlistener on submit    
+migrationsForm.addEventListener('submit', (event) => requestMigrationsRun(event));
+// trig migration runner
+async function requestMigrationsRun(event) {
+    event.preventDefault();
+    // request to execute migrations
+    const res = await fetch('/migrations/up', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Custom-Header': 'custom-run-migrations',
+            'X-CSRF-Token': document.getElementById('csrf_token').value,
+            'X-CSRF-Token-Id': document.getElementById('csrf_token_id').value
+        }
+    });
+    // parse response
+    let data = await res.json();
+    if (data?.status === false) {
+        alert('Error in request - message \n', data?.data.message);
+    } else {
+        window.location.href = 'http://localhost:8000/migrations';
+    }
+}

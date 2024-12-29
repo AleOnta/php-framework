@@ -27,6 +27,8 @@ class PageBuilder
 
         # get the view
         ob_start();
+        # pass content data if set
+        $data = $content['data'] ?? [];
         # include the view
         include AppConstants::VIEWS_DIR . $content['view'] . '.php';
         # store output as string

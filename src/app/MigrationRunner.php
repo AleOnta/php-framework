@@ -98,4 +98,39 @@ class MigrationRunner
         $stmt = $this->db->query("SELECT migration, classname FROM migrations ORDER BY applied_at DESC LIMIT 1;");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    private function getMigrationClassName($filename)
+    {
+        $class = str_replace('.php', '', $filename);
+        $class = substr($class, 15);
+        $class = explode('_', $class);
+        $className = '';
+        foreach ($class as $word) $className .= ucfirst($word);
+        return $className;
+    }
+
+    # returns a report of the migration ran and not
+    public function getMigrationsReport()
+    {
+        # retrive all executed migrations
+        $migrated = $this->db->query("SELECT * FROM migrations;")->fetchAll(PDO::FETCH_ASSOC);
+        # get all migration files available
+        $files = glob(AppConstants::MIGRATIONS_DIR . '*.php');
+        # get only the filenamen
+        $filesNames = array_map(function ($el) {
+            return explode('/', $el)[9];
+        }, $files);
+        # find not ran migrations
+        $migratedNames = array_map(function ($el) {
+            return $el['migration'];
+        }, $migrated);
+        # extract not ran migrations
+        $availableMigrations = array_values(array_diff($filesNames, $migratedNames));
+        # get migration classname from filename
+        $availableMigrations = array_map(function ($el) {
+            return ['filename' => $el, 'classname' => $this->getMigrationClassName($el)];
+        }, $availableMigrations);
+        # return report
+        return ['status' => true, 'ok_migrations' => $migrated, 'to_run_migrations' => $availableMigrations];
+    }
 }
